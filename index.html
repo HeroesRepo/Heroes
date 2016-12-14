@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="heroesMainApp">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Heroes</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Theme CSS -->
+    <link href="css/freelancer.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    
+
+</head>
+
+<body id="page-top" class="index" ng-controller="heroesMainCtrl">
+
+    <!-- Navigation -->
+    <nav id="mainNav" class="navbar navbar-default navbar-fixed-top navbar-custom">
+        <div class="container" >
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span> Menu <i class="fa fa-bars"></i>
+                </button>
+                <a class="navbar-brand" href="#page-top">Heroes</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="hidden">
+                        <a href="#page-top"></a>
+                    </li>
+                    <li class="page-scroll">
+                        <a href="#availability">Availability</a>
+                    </li>
+                    <li class="page-scroll">
+                        <a href="#about">About</a>
+                    </li>
+                    <li class="page-scroll">
+                        <a href="#contact">Donor</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+
+    <!-- Header -->
+    <header>
+        <div class="container" style="padding-top: 115px;">
+            <div class="row">
+                <div class="col-lg-12">
+                    <img class="img-responsive" src="img/logo.png" alt="" style="width: 280px">
+                    <div class="intro-text">
+                        <form class="form-inline">
+                            <div><span class="skills" style="color: #0a5c7d; font-weight: bold; font-size: 30px;">I NEED</span></div>
+                            <div class="form-group " >
+                                <select class="form-control" id="form-custom-select-group" ng-model="search.bloodGroup">
+                                    <option ng-repeat="group in search.bloodGroups" value="{{group.identifier}}">{{group.name}}</option>
+                                </select>
+                            </div>
+                            <div class="form-group ">
+                                <select class="form-control" id="form-custom-select-component" ng-model="search.component">
+                                    <option ng-repeat="component in search.components" value="{{component.identifier}}">{{component.name}}</option>
+                                </select>
+                            </div>
+                            <div style="margin-top: 20px;"><button type="submit" id="searchButton" class="btn btn-lg btn-default btn-custom-search" ng-click="retrieveStock()"><a href="#availability" style="color: white">SEARCH</a></button></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Portfolio Grid Section -->
+    <section id="availability" >
+        <div class="container" ng-show="hasSearched && isSetOrigin" style="margin-bottom: -70px">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2>BLOOD AVAILABILITY</h2>
+                    <hr class="star-primary">
+                </div>
+            </div>
+            <div id="no-more-tables">
+                <table class="col-md-12 table table-hover cf">
+                    <thead class="cf">
+                        <tr>
+                            <th>Blood Bank Name</th>
+                            <th>Quantity <span style="color: red">*</span></th>
+                            <th class="numeric" >Distance</th>
+                            <th class="numeric">Contact</th>
+                            <th class="numeric">Last Updated</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat = "entry in stockData">
+                            <td data-title="Blood Bank Name">{{entry.bb_name}}</td>
+                            <td data-title="Quantity">{{entry.stock}}</td>
+                            <td data-title="Distance" class="numeric" ng-if="'isSetOrigin'">{{entry.distance}}</td>
+                            <td data-title="Contact" class="numeric">{{entry.contact_no}}</td>
+                            <td data-title="Last Updated" class="numeric">{{entry.last_updated}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div>
+                <button class="btn btn-primary" id="searchAgainButton"> <a href="#page-top" style="color: white">SEARCH AGAIN</a> </button>
+            </div>
+            <div class="disclaimer">
+                <span >*</span> While we are trying our best to update this data regularly, we strongly advice you to call the blood bank before going there.
+            </div>
+        </div>
+        <div class="container" ng-show="hasSearched && !isSetOrigin" style="margin-bottom: -70px">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2>BLOOD AVAILABILITY</h2>
+                    <hr class="star-primary">
+                </div>
+            </div>
+            <div id="no-more-tables">
+                <table class="col-md-12 table table-hover cf">
+                    <thead class="cf">
+                        <tr>
+                            <th>Blood Bank Name</th>
+                            <th>Quantity <span style="color: red">*</span></th>
+                            <!--<th class="numeric" >Distance</th>-->
+                            <th class="numeric">Contact</th>
+                            <th class="numeric">Last Updated</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat = "entry in stockData">
+                            <td data-title="Blood Bank Name">{{entry.bb_name}}</td>
+                            <td data-title="Quantity">{{entry.stock}}</td>
+                            <!--<td data-title="Distance" class="numeric" ng-if="'isSetOrigin'">{{entry.distance}}</td>-->
+                            <td data-title="Contact" class="numeric">{{entry.contact_no}}</td>
+                            <td data-title="Last Updated" class="numeric">{{entry.last_updated}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div>
+                <button class="btn btn-primary" id="searchAgainButton"> <a href="#page-top" style="color: white">SEARCH AGAIN</a> </button>
+            </div>
+            <div class="disclaimer">
+                <span >*</span> While we are trying our best to update this data regularly, we strongly advice you to call the blood bank before going there.
+            </div>
+        </div>
+        <div class="container" ng-show="!hasSearched">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2>BLOOD AVAILABILITY</h2>
+                    <hr class="star-primary">
+                </div>
+            </div>
+            <div id="graphContainer" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+            <div>
+                <button class="btn btn-primary" id="searchSpecificButton"> <a href="#page-top" style="color: white">SEARCH SPECIFIC</a> </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="success" id="about">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2>About</h2>
+                    <hr class="star-light">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-lg-offset-2">
+                    <p>Every year, a large number of people in India die due to lack of availability of blood. We at Heroes, want to reduce this number to zero!</p>
+                </div>
+                <div class="col-lg-4">
+                    <p>Each individual can save upto 4 lives every year by donating every 3 months. Join us in this jourmey of making India a blood worry free country! </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2>Donor Registration</h2>
+                    <hr class="star-primary">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2">
+                    <!-- To configure the contact form email address, go to mail/contact_me.php and update the email address in the PHP file on line 19. -->
+                    <!-- The form should work on most web servers, but if the form is not working you may need to configure your web server differently. -->
+                    <form name="sentMessage" id="contactForm" novalidate>
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <label>Name</label>
+                                <input type="text" class="form-control" placeholder="Name" id="name" required data-validation-required-message="Please enter your name.">
+                                <p class="help-block text-danger"></p>
+                            </div>
+                        </div>
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <label>Email Address</label>
+                                <input type="email" class="form-control" placeholder="Email Address" id="email" required data-validation-required-message="Please enter your email address.">
+                                <p class="help-block text-danger"></p>
+                            </div>
+                        </div>
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <label>Phone Number</label>
+                                <input type="tel" class="form-control" placeholder="Phone Number" id="phone" required data-validation-required-message="Please enter your phone number.">
+                                <p class="help-block text-danger"></p>
+                            </div>
+                        </div>
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <label>Blood Group</label>
+                                <input type="tel" class="form-control" placeholder="Blood Group" id="bloodGroup" required data-validation-required-message="Please enter your Blood Group">
+                                <p class="help-block text-danger"></p>
+                            
+
+                            </div>
+                        </div>
+                        <br>
+                        <div id="success"></div>
+                        <div class="row">
+                            <div class="form-group col-xs-12">
+                                <button type="submit" class="btn btn-success btn-lg">Register</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="text-center">
+        <div class="footer-above">
+            <div class="container">
+                <div class="row">
+                    <div class="footer-col col-md-6">
+                        <h3>Location</h3>
+                        <p>Digital Impact Square
+                            <br>Nashik, Maharashtra</p>
+                    </div>
+                    <div class="footer-col col-md-6">
+                        <h3>Around the Web</h3>
+                        <ul class="list-inline">
+                            <li>
+                                <a href="#" class="btn-social btn-outline"><i class="fa fa-fw fa-facebook"></i></a>
+                            </li>
+                            <li>
+                                <a href="#" class="btn-social btn-outline"><i class="fa fa-fw fa-google-plus"></i></a>
+                            </li>
+                            <li>
+                                <a href="#" class="btn-social btn-outline"><i class="fa fa-fw fa-twitter"></i></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-below">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        Copyright &copy; Heroes 2016
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scroll to Top Button (Only visible on small and extra-small screen sizes) -->
+    <div class="scroll-top page-scroll hidden-sm hidden-xs hidden-lg hidden-md">
+        <a class="btn btn-primary" href="#page-top">
+            <i class="fa fa-chevron-up"></i>
+        </a>
+    </div>
+
+    
+    <!-- jQuery -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Plugin JavaScript -->
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>-->
+
+    <!-- Angular -->
+    <script type="text/javascript" src="vendor/angular/angular.min.js"></script>
+
+    <!-- Google Maps API -->
+    <script type="text/javascript" src="https://maps.google.com/maps/api/js?sensor=false&key=AIzaSyCMcA-tHj6WPKbrwWVwi3DHkA_5eOy3eP0"></script>
+
+    <!-- Custom Javascript -->
+    <script type="text/javascript" src="js/initialize.js"></script>
+    <script type="text/javascript" src="js/controller/heroesMainCtrl.js"></script>
+    <script type="text/javascript" src="js/services/dailyStockSvc.js"></script>
+    <script type="text/javascript" src="js/services/completeStockSvc.js"></script>
+
+    <!-- Contact Form JavaScript -->
+    <script src="js/jqBootstrapValidation.js"></script>
+
+    <!-- Theme JavaScript -->
+    <script src="js/freelancer.js"></script>  
+
+    <!-- Date JS -->
+    <script type="text/javascript" src="vendor/date.js"></script> 
+
+    <!-- Highcharts -->
+    <script src="vendor/highcharts/highcharts.js"></script>
+    <script src="vendor/highcharts/exporting.js"></script>
+ 
+
+</body>
+
+</html>
